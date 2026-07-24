@@ -1,0 +1,34 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.raymond.networkreset.parser;
+
+import java.util.List;
+
+/**
+ *
+ * @author rayk2
+ */
+public class BannerParserResolver {
+    
+    private static final List<BannerParser> PARSERS = List.of(
+        new CiscoBannerParser(),
+        new DellBannerParser(),
+        new PaloaltoBannerParser()
+    );
+    
+    public BannerParser resolve(String banner) {
+        
+        if (banner == null || banner.trim().isEmpty()) {
+            throw new IllegalArgumentException("Banner cannot be empty");
+        }
+        
+        for (BannerParser parser : PARSERS) {
+            if (parser.canParse(banner)) {
+                return parser;
+            }
+        }
+        throw new IllegalArgumentException("Banner cannot be resolved");
+    }  
+}
