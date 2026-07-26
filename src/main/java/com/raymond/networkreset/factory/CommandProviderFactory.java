@@ -26,7 +26,7 @@ public class CommandProviderFactory {
                 return new PaloaltoCommandProvider();
                 
             default:
-                throw new UnsupportedOperationException("Command provider not found");
+                throw new IllegalArgumentException("Command provider not found");
         }
     }
 }

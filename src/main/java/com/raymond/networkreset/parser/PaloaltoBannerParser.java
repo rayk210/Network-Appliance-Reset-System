@@ -5,13 +5,19 @@
 package com.raymond.networkreset.parser;
 
 import com.raymond.networkreset.domain.enums.DeviceBrand;
+import com.raymond.networkreset.domain.exception.UnsupportedDeviceException;
 import com.raymond.networkreset.domain.valueobject.DeviceModel;
+import java.util.Map;
 
 /**
  *
  * @author rayk2
  */
 public class PaloaltoBannerParser implements BannerParser{
+    
+    private static final Map<String, String> MODELS = Map.of(
+            "pa-3250", "PA-3250"
+    );
     
     @Override
     public boolean canParse(String banner) {
@@ -23,9 +29,11 @@ public class PaloaltoBannerParser implements BannerParser{
         
         String lowerBanner = banner.toLowerCase();
         
-        if (lowerBanner.contains("pa-3250")) {
-            return new DeviceModel(DeviceBrand.PALO_ALTO, "pa-3250");
+        for(Map.Entry<String, String> entry : MODELS.entrySet()) {
+            if (lowerBanner.contains(entry.getKey())) {
+                return new DeviceModel(DeviceBrand.PALO_ALTO, entry.getValue());
+            }
         }
-        throw new IllegalArgumentException("Model not found");
+        throw new UnsupportedDeviceException("Cannot find Paloalto device model");
     }
 }

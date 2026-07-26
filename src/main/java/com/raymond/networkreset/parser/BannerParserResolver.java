@@ -17,7 +17,7 @@ public class BannerParserResolver {
         new DellBannerParser(),
         new PaloaltoBannerParser()
     );
-    
+     
     public BannerParser resolve(String banner) {
         
         if (banner == null || banner.trim().isEmpty()) {
@@ -29,6 +29,6 @@ public class BannerParserResolver {
                 return parser;
             }
         }
-        throw new IllegalArgumentException("Banner cannot be resolved");
+        throw new IllegalArgumentException("Cannot resolve parser type");
     }  
 }

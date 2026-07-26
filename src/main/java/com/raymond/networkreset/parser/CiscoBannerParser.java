@@ -5,13 +5,20 @@
 package com.raymond.networkreset.parser;
 
 import com.raymond.networkreset.domain.enums.DeviceBrand;
+import com.raymond.networkreset.domain.exception.UnsupportedDeviceException;
 import com.raymond.networkreset.domain.valueobject.DeviceModel;
+import java.util.Map;
 
 /**
  *
  * @author rayk2
  */
 public class CiscoBannerParser implements BannerParser {
+    
+    private static final Map<String, String> MODELS = Map.of(
+            "catalyst 9300", "Catalyst 9300",
+            "catalyst 9600", "Catalyst 9600"
+    );
     
     @Override
     public boolean canParse(String banner) {
@@ -23,13 +30,11 @@ public class CiscoBannerParser implements BannerParser {
         
         String lowerBanner = banner.toLowerCase();
         
-        if (lowerBanner.contains("catalyst 9300")) {
-            return new DeviceModel(DeviceBrand.CISCO, "catalyst 9300");
+        for (Map.Entry<String, String> entry : MODELS.entrySet()) {
+            if (lowerBanner.contains(entry.getKey())) {
+                return new DeviceModel(DeviceBrand.CISCO, entry.getValue());
+            }
         }
-        
-        if (lowerBanner.contains("catalyst 9600")) {
-            return new DeviceModel(DeviceBrand.CISCO, "catalyst 9600");
-        }
-        throw new IllegalArgumentException("Model not found");
+        throw new UnsupportedDeviceException("Cannot find Cisco device model");
     }
 }

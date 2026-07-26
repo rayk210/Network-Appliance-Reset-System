@@ -14,13 +14,9 @@ public interface CommandExecutor {
     
     void connect() throws IOException;
     
-    void disconnect();
+    void disconnect() throws IOException;
     
     boolean isConnected();
     
-    void execute(DeviceCommand cmd);
-    
-    void sendCommand(String command)throws IOException;
-    
-    String readResponse() throws IOException;
+    void execute(DeviceCommand cmd) throws IOException;
 }

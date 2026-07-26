@@ -5,13 +5,20 @@
 package com.raymond.networkreset.parser;
 
 import com.raymond.networkreset.domain.enums.DeviceBrand;
+import com.raymond.networkreset.domain.exception.UnsupportedDeviceException;
 import com.raymond.networkreset.domain.valueobject.DeviceModel;
+import java.util.Map;
 
 /**
  *
  * @author rayk2
  */
 public class DellBannerParser implements BannerParser {
+    
+    private static final Map<String, String> MODELS = Map.of(
+            "s3248t-on", "S3248T-ON",
+            "s5248f-on", "S5248F-ON"
+    );
     
     @Override
     public boolean canParse(String banner) {
@@ -23,13 +30,11 @@ public class DellBannerParser implements BannerParser {
         
         String lowerBanner = banner.toLowerCase();
         
-        if (lowerBanner.contains("s3248t-on")) {
-            return new DeviceModel(DeviceBrand.DELL, "s3248t-on");
+        for (Map.Entry<String, String> entry : MODELS.entrySet()) {
+            if (lowerBanner.contains(entry.getKey())) {
+                return new DeviceModel(DeviceBrand.DELL, entry.getValue());
+            }
         }
-        
-        if (lowerBanner.contains("s5248f-on")) {
-            return new DeviceModel(DeviceBrand.DELL, "s5248f-on");
-        }
-        throw new IllegalArgumentException("Model not found");
+        throw new UnsupportedDeviceException("Cannot find Dell device model");
     }
 }
