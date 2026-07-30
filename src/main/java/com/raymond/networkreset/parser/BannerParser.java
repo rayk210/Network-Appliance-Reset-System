@@ -5,6 +5,7 @@
 package com.raymond.networkreset.parser;
 
 import com.raymond.networkreset.domain.valueobject.DeviceModel;
+import com.raymond.networkreset.domain.valueobject.Response;
 
 /**
  *
@@ -12,7 +13,7 @@ import com.raymond.networkreset.domain.valueobject.DeviceModel;
  */
 public interface BannerParser {
     
-    boolean canParse(String banner);
+    boolean canParse(Response banner);
     
-    DeviceModel parse(String banner);
+    DeviceModel parse(Response banner);
 }

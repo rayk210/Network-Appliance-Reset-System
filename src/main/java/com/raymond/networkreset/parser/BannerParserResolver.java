@@ -4,6 +4,7 @@
  */
 package com.raymond.networkreset.parser;
 
+import com.raymond.networkreset.domain.valueobject.Response;
 import java.util.List;
 
 /**
@@ -18,9 +19,9 @@ public class BannerParserResolver {
         new PaloaltoBannerParser()
     );
      
-    public BannerParser resolve(String banner) {
+    public BannerParser resolve(Response banner) {
         
-        if (banner == null || banner.trim().isEmpty()) {
+        if (banner == null || banner.getRawText().trim().isEmpty()) {
             throw new IllegalArgumentException("Banner cannot be empty");
         }
         

@@ -4,6 +4,7 @@
  */
 package com.raymond.networkreset;
 
+import com.fazecast.jSerialComm.SerialPort;
 /**
  *
  * @author rayk2

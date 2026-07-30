@@ -5,6 +5,7 @@
 package com.raymond.networkreset.application.usecase;
 
 import com.raymond.networkreset.domain.model.CommandExecutor;
+import com.raymond.networkreset.domain.model.CommandSession;
 import com.raymond.networkreset.domain.model.DeviceCommand;
 import com.raymond.networkreset.domain.model.NetworkDevice;
 import com.raymond.networkreset.factory.CommandProvider;
@@ -28,6 +29,8 @@ public class FactoryResetUseCase {
         CommandProvider provider = factory.create(device);
         DeviceCommand factoryResetCmd = provider.factoryReset();
         
+        CommandSession session = new CommandSession(executor);
+        
         executor.connect();
         
         if (!executor.isConnected()) {
@@ -35,10 +38,10 @@ public class FactoryResetUseCase {
         }
         
         try {
-            executor.execute(factoryResetCmd);
+            session.execute(factoryResetCmd);
         }
-        finally {
-            executor.disconnect();
+        catch (IOException e) {
+            throw new IOException("Failed to execute command");
         }
     }   
 }

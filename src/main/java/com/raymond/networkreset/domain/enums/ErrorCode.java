@@ -9,7 +9,8 @@ package com.raymond.networkreset.domain.enums;
  * @author rayk2
  */
 public enum ErrorCode {
-    UNSUPPORTED_DEVICE(1001, "Cannot find suitable network device from model");
+    UNSUPPORTED_DEVICE(1001, "Cannot find suitable network device from model"),
+    UNEXPECTED_RESPONSE(1002, "Expected response does not match the actual response from device");
     
     private final int errorCode;
     private final String errorMsg;

@@ -5,21 +5,11 @@
 package com.raymond.networkreset.domain.model;
 
 import com.raymond.networkreset.domain.valueobject.Response;
-import java.io.IOException;
 
 /**
  *
  * @author rayk2
  */
-public interface CommandExecutor {
-    
-    void connect() throws IOException;
-    
-    void disconnect() throws IOException;
-    
-    boolean isConnected();
-    
-    void sendCommand(String command) throws IOException;
-    
-    Response receive() throws IOException;
+public interface ResponseExpectation {
+    boolean matches(Response response);
 }

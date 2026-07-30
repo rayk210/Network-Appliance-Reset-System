@@ -11,5 +11,5 @@ import java.util.List;
  * @author rayk2
  */
 public interface DeviceCommand {
-    List<String> commands();
+    List<CommandStep> commands();
 }

@@ -7,6 +7,7 @@ package com.raymond.networkreset.parser;
 import com.raymond.networkreset.domain.enums.DeviceBrand;
 import com.raymond.networkreset.domain.exception.UnsupportedDeviceException;
 import com.raymond.networkreset.domain.valueobject.DeviceModel;
+import com.raymond.networkreset.domain.valueobject.Response;
 import java.util.Map;
 
 /**
@@ -21,14 +22,14 @@ public class CiscoBannerParser implements BannerParser {
     );
     
     @Override
-    public boolean canParse(String banner) {
-        return banner != null && banner.toLowerCase().contains("cisco");
+    public boolean canParse(Response banner) {
+        return banner != null && banner.containsIgnoreCase("cisco");
     }
     
     @Override
-    public DeviceModel parse(String banner) {
+    public DeviceModel parse(Response banner) {
         
-        String lowerBanner = banner.toLowerCase();
+        String lowerBanner = banner.getRawText().toLowerCase();
         
         for (Map.Entry<String, String> entry : MODELS.entrySet()) {
             if (lowerBanner.contains(entry.getKey())) {
