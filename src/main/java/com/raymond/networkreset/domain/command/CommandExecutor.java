@@ -2,9 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package com.raymond.networkreset.domain.model;
+package com.raymond.networkreset.domain.command;
 
-import com.raymond.networkreset.domain.valueobject.Response;
 import java.io.IOException;
 
 /**

@@ -2,10 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.raymond.networkreset.domain.model;
+package com.raymond.networkreset.domain.command;
 
 import com.raymond.networkreset.domain.exception.UnexpectedResponseException;
-import com.raymond.networkreset.domain.valueobject.Response;
 import java.io.IOException;
 
 
@@ -25,8 +24,10 @@ public class CommandSession {
         
         for (CommandStep step : command.commands()) {
             executor.sendCommand(step.getCommand());
+            System.out.println("Send: " + step.getCommand());
             
             Response response = executor.receive();
+            System.out.println("Response: " + response.getRawText());
             
             if (!step.getExpectation().matches(response)) {
                 throw new UnexpectedResponseException("Expected response did not match the actual");

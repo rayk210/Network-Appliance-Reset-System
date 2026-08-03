@@ -4,12 +4,12 @@
  */
 package com.raymond.networkreset.application.usecase;
 
-import com.raymond.networkreset.domain.model.CommandExecutor;
-import com.raymond.networkreset.domain.model.CommandSession;
-import com.raymond.networkreset.domain.model.DeviceCommand;
+import com.raymond.networkreset.domain.command.CommandExecutor;
+import com.raymond.networkreset.domain.command.CommandSession;
+import com.raymond.networkreset.domain.command.DeviceCommand;
 import com.raymond.networkreset.domain.model.NetworkDevice;
-import com.raymond.networkreset.factory.CommandProvider;
-import com.raymond.networkreset.factory.CommandProviderFactory;
+import com.raymond.networkreset.provider.CommandProvider;
+import com.raymond.networkreset.provider.CommandProviderFactory;
 import java.io.IOException;
 
 /**
@@ -31,17 +31,6 @@ public class FactoryResetUseCase {
         
         CommandSession session = new CommandSession(executor);
         
-        executor.connect();
-        
-        if (!executor.isConnected()) {
-            throw new IOException("Failed to establish connection");
-        }
-        
-        try {
-            session.execute(factoryResetCmd);
-        }
-        catch (IOException e) {
-            throw new IOException("Failed to execute command");
-        }
+        session.execute(factoryResetCmd);
     }   
 }

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.raymond.networkreset.factory;
+package com.raymond.networkreset.detector;
 
 import com.raymond.networkreset.domain.model.CiscoDevice;
 import com.raymond.networkreset.domain.model.DellDevice;

@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.raymond.networkreset.parser;
+package com.raymond.networkreset.detector;
 
 import com.raymond.networkreset.domain.enums.DeviceBrand;
 import com.raymond.networkreset.domain.exception.UnsupportedDeviceException;
 import com.raymond.networkreset.domain.valueobject.DeviceModel;
-import com.raymond.networkreset.domain.valueobject.Response;
+import com.raymond.networkreset.domain.command.Response;
 import java.util.Map;
 
 /**
@@ -18,7 +18,7 @@ public class CiscoBannerParser implements BannerParser {
     
     private static final Map<String, String> MODELS = Map.of(
             "catalyst 9300", "Catalyst 9300",
-            "catalyst 9600", "Catalyst 9600"
+            "catalyst 2960", "Catalyst 2960"
     );
     
     @Override

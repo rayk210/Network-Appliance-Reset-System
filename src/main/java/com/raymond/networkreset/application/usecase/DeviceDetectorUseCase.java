@@ -4,13 +4,13 @@
  */
 package com.raymond.networkreset.application.usecase;
 
-import com.raymond.networkreset.domain.model.CommandExecutor;
+import com.raymond.networkreset.domain.command.CommandExecutor;
 import com.raymond.networkreset.domain.model.NetworkDevice;
 import com.raymond.networkreset.domain.valueobject.DeviceModel;
-import com.raymond.networkreset.domain.valueobject.Response;
-import com.raymond.networkreset.factory.NetworkDeviceFactory;
-import com.raymond.networkreset.parser.BannerParser;
-import com.raymond.networkreset.parser.BannerParserResolver;
+import com.raymond.networkreset.domain.command.Response;
+import com.raymond.networkreset.detector.NetworkDeviceFactory;
+import com.raymond.networkreset.detector.BannerParser;
+import com.raymond.networkreset.detector.BannerParserResolver;
 import java.io.IOException;
 
 /**
@@ -28,19 +28,14 @@ public class DeviceDetectorUseCase {
     
     public NetworkDevice create(CommandExecutor executor) throws IOException {
         
-        executor.connect();
+        Response banner = executor.receive();
+        System.out.println("Banner: " + banner.getRawText());
         
-        try {
-            Response banner = executor.receive();
+        BannerParser parser = resolver.resolve(banner);
         
-            BannerParser parser = resolver.resolve(banner);
+        DeviceModel model = parser.parse(banner);
+        System.out.println(model.getBrand() + " " + model.getName() + " detected");
         
-            DeviceModel model = parser.parse(banner);
-        
-            return factory.create(model); 
-        }
-        finally {
-            executor.disconnect();
-        } 
+        return factory.create(model); 
     }
 }

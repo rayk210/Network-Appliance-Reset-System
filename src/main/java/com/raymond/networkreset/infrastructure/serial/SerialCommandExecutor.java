@@ -4,11 +4,11 @@
  */
 package com.raymond.networkreset.infrastructure.serial;
 
-import com.raymond.networkreset.domain.model.CommandExecutor;
+import com.raymond.networkreset.domain.command.CommandExecutor;
 import java.io.IOException;
 
 import com.fazecast.jSerialComm.SerialPort;
-import com.raymond.networkreset.domain.valueobject.Response;
+import com.raymond.networkreset.domain.command.Response;
 import com.raymond.networkreset.domain.valueobject.SerialConfiguration;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -79,15 +79,16 @@ public class SerialCommandExecutor implements CommandExecutor {
     @Override
     public Response receive() throws IOException {
         
-        StringBuilder bannerBuilder = new StringBuilder();
-        
         byte[] buffer = new byte[1024];
         
-        int readBytes;
+        int bytesRead = input.read(buffer);
         
-        while((readBytes = input.read(buffer)) != -1) {
-            bannerBuilder.append(new String(buffer, 0, readBytes));
+        if (bytesRead <= 0) {
+            throw new IOException("No response received");
         }
-        return new Response(bannerBuilder.toString());
+        
+        String text = new String(buffer,0, bytesRead, StandardCharsets.UTF_8);
+        
+        return new Response(text);
     }
 }
