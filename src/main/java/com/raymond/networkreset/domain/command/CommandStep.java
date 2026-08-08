@@ -12,13 +12,13 @@ import java.time.Duration;
  */
 public final class CommandStep {
     
-    private final String command;
+    private final CommandAction action;
     private final Duration timeout;
     private final ResponseExpectation expectation;  
-    private final int retryCount;
+    private final int maxRetries;
     
-    public CommandStep(String command, Duration timeout, ResponseExpectation expectation, int retryCount) {
-        if (command == null) {
+    public CommandStep(CommandAction action, Duration timeout, ResponseExpectation expectation, int maxRetries) {
+        if (action == null) {
             throw new IllegalArgumentException("Command cannot be null");
         }
         
@@ -26,21 +26,21 @@ public final class CommandStep {
             throw new IllegalArgumentException("Expectation cannot be null");
         }
         
-        if (retryCount < 1) {
+        if (maxRetries < 1) {
             throw new IllegalArgumentException("Retry count must be at least one");
         }
         
-        this.command = command;
+        this.action = action;
         
         this.timeout = timeout != null ? timeout : Duration.ZERO;
         
         this.expectation = expectation;
         
-        this.retryCount = retryCount;
+        this.maxRetries = maxRetries;
     }
     
-    public String getCommand() {
-        return command;
+    public CommandAction getAction() {
+        return action;
     }
     
     public Duration getTimeout() {
@@ -51,7 +51,7 @@ public final class CommandStep {
         return expectation;
     }
     
-    public int getRetryCount() {
-        return retryCount;
+    public int getMaxRetries() {
+        return maxRetries;
     }
 }

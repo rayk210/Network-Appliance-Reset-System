@@ -4,12 +4,12 @@
  */
 package com.raymond.networkreset.domain.command;
 
-import java.util.List;
+import java.io.IOException;
 
 /**
  *
  * @author rayk2
  */
-public interface DeviceCommand {
-    List<CommandStep> commands();
+public interface CommandAction {
+    void execute(CommandExecutor executor) throws IOException;
 }

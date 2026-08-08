@@ -23,14 +23,22 @@ public class CommandSession {
     public void execute(DeviceCommand command) throws IOException {
         
         for (CommandStep step : command.commands()) {
-            executor.sendCommand(step.getCommand());
-            System.out.println("Send: " + step.getCommand());
+            boolean success = false;
+            System.out.println("Sent: " + step.getAction());
             
-            Response response = executor.receive();
-            System.out.println("Response: " + response.getRawText());
-            
-            if (!step.getExpectation().matches(response)) {
-                throw new UnexpectedResponseException("Expected response did not match the actual");
+            for(int i = 0; i < step.getMaxRetries(); i++) {
+                step.getAction().execute(executor);
+                
+                Response response = executor.receive(step.getTimeout());
+                System.out.println("Received: " + response.getRawText());
+                
+                if (step.getExpectation().matches(response)) {
+                    success = true;
+                    break;
+                }
+            }
+            if (!success) {
+                throw new UnexpectedResponseException("Expected response did not match actual response");
             }
         }
     }

@@ -7,6 +7,7 @@ package com.raymond.networkreset.infrastructure.serial;
 import com.raymond.networkreset.domain.command.CommandExecutor;
 import com.raymond.networkreset.domain.command.Response;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,12 +47,31 @@ public class MockSerialExecutor implements CommandExecutor {
     }
     
     @Override
-    public Response receive() throws IOException {
-        Response response = responses.poll();
+    public void sendBreak() {
         
-        if (response == null) {
-            throw new IOException("No responses available");
+    }
+    
+    @Override
+    public Response receive(Duration timeout) throws IOException {
+        
+        long deadline = System.currentTimeMillis() + timeout.toMillis();
+        
+        while(System.currentTimeMillis() < deadline) {
+            
+            Response response = responses.poll();
+            
+            if (response != null) {
+                return response;
+            }
+            
+            try {
+                Thread.sleep(10);
+            }
+            catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IOException(e);
+            }
         }
-        return response;
+        throw new IOException("Timed out waiting for response"); 
     }
 }

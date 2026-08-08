@@ -4,7 +4,6 @@
  */
 package com.raymond.networkreset.detector;
 
-import com.raymond.networkreset.detector.BannerParser;
 import com.raymond.networkreset.domain.command.Response;
 import java.util.List;
 

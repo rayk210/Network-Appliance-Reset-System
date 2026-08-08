@@ -12,6 +12,7 @@ import com.raymond.networkreset.detector.NetworkDeviceFactory;
 import com.raymond.networkreset.detector.BannerParser;
 import com.raymond.networkreset.detector.BannerParserResolver;
 import java.io.IOException;
+import java.time.Duration;
 
 /**
  *
@@ -28,7 +29,7 @@ public class DeviceDetectorUseCase {
     
     public NetworkDevice create(CommandExecutor executor) throws IOException {
         
-        Response banner = executor.receive();
+        Response banner = executor.receive(Duration.ofSeconds(10));
         System.out.println("Banner: " + banner.getRawText());
         
         BannerParser parser = resolver.resolve(banner);

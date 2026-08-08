@@ -13,6 +13,7 @@ import com.raymond.networkreset.domain.valueobject.SerialConfiguration;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 /**
  *
@@ -23,6 +24,7 @@ public class SerialCommandExecutor implements CommandExecutor {
     private InputStream input;
     private OutputStream output;
     private SerialPort comPort;
+    private static final byte[] CRLF_BYTES = "\r\n".getBytes(StandardCharsets.UTF_8);
     private final SerialConfiguration config;
     
     public SerialCommandExecutor(SerialConfiguration config) {
@@ -31,13 +33,11 @@ public class SerialCommandExecutor implements CommandExecutor {
     
     @Override
     public void connect() throws IOException {
+        if (isConnected()) {
+            return;
+        }
         
-        comPort = SerialPort.getCommPort(config.getPort());
-        comPort.setBaudRate(config.getBaudRate());
-        comPort.setNumDataBits(config.getNumDataBits());
-        comPort.setNumStopBits(config.getNumStopBits());
-        comPort.setParity(config.getParity());
-        comPort.setFlowControl(config.getFlowControl());
+        comPort = createPort();
         
         if (!comPort.openPort()) {
             throw new IOException("Failed to open " + config.getPort());
@@ -49,19 +49,26 @@ public class SerialCommandExecutor implements CommandExecutor {
     
     @Override
     public void disconnect() throws IOException {
-        if (input != null) {
-            input.close();
-        }
         
-        if (output != null) {
-            output.close();
-        }
-        
-        if (comPort != null && comPort.isOpen()) {
-            
-            if (!comPort.closePort()) {
-                throw new IOException("Failed to close COM port");
+        try {
+            if (input != null) {
+                input.close();
             }
+            
+            if (output != null) {
+                output.close();
+            }
+            
+            if (comPort != null && comPort.isOpen()) {
+                if (!comPort.closePort()) {
+                    throw new IOException("Failed to close com port");
+                }
+            }
+        }
+        finally {
+            input = null;
+            output = null;
+            comPort = null;
         }
     }
     
@@ -72,23 +79,90 @@ public class SerialCommandExecutor implements CommandExecutor {
     
     @Override
     public void sendCommand(String line) throws IOException {
-        output.write((line + "\r\n").getBytes(StandardCharsets.UTF_8));
-        output.flush(); 
+        if(line == null || line.isBlank()) {
+            throw new IllegalArgumentException("Command cannot be blank");
+        }
+        
+        if(!isConnected()) {
+            throw new IOException("Executor is not connected");
+        }
+        
+        try {
+            output.write((line).getBytes(StandardCharsets.UTF_8));
+            output.write(CRLF_BYTES);
+            output.flush();
+        }
+        catch (IOException e) {
+            throw new IOException("Failed to send command: " + line, e);
+        }
     }
     
     @Override
-    public Response receive() throws IOException {
+    public void sendBreak() throws IOException {
+        if (!isConnected()) {
+            throw new IOException("Serial executor is not connected");
+        }
+        
+        try {
+            comPort.setBreak();
+        }
+        catch (Exception e) {
+            throw new IOException("Failed to send BREAK signal", e);
+        }
+    }
+    
+    @Override
+    public Response receive(Duration timeout) throws IOException {
+        
+        if(!isConnected())  {
+            throw new IOException("Executor is not connected");
+        }
+        
+        long deadline = System.currentTimeMillis() + timeout.toMillis();
         
         byte[] buffer = new byte[1024];
         
-        int bytesRead = input.read(buffer);
+        StringBuilder builder = new StringBuilder();
         
-        if (bytesRead <= 0) {
-            throw new IOException("No response received");
+        while(System.currentTimeMillis() < deadline) {
+            
+            try {
+                if (input.available() > 0) {
+                    int readBytes = input.read(buffer);
+                    
+                    if (readBytes > 0) {
+                        builder.append(new String(buffer, 0, readBytes, StandardCharsets.UTF_8));
+                        deadline = System.currentTimeMillis() + timeout.toMillis();
+                    }
+                }
+                else {
+                    try {
+                        Thread.sleep(5);
+                    }
+                    catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new IOException("Interrupted while waiting for response", e);
+                    }
+                }
+            }
+            catch (IOException e) {
+                throw new IOException("Failed while reading from serial port", e);
+            }
         }
+        if (builder.length() == 0) {
+            throw new IOException("Timed out waiting for response");
+        }
+        return new Response(builder.toString());
+    }    
+    
+    private SerialPort createPort() {
+        SerialPort port = SerialPort.getCommPort(config.getPort());
+        port.setBaudRate(config.getBaudRate());
+        port.setNumDataBits(config.getNumDataBits());
+        port.setNumStopBits(config.getNumStopBits());
+        port.setParity(config.getParity());
+        port.setFlowControl(config.getFlowControl());
         
-        String text = new String(buffer,0, bytesRead, StandardCharsets.UTF_8);
-        
-        return new Response(text);
+        return port;
     }
 }

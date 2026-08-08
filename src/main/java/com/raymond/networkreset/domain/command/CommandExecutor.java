@@ -5,6 +5,7 @@
 package com.raymond.networkreset.domain.command;
 
 import java.io.IOException;
+import java.time.Duration;
 
 /**
  *
@@ -20,5 +21,7 @@ public interface CommandExecutor {
     
     void sendCommand(String command) throws IOException;
     
-    Response receive() throws IOException;
+    void sendBreak() throws IOException;
+    
+    Response receive(Duration timeout) throws IOException;
 }
