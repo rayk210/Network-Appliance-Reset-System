@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.raymond.networkreset.domain.command.Response;
+import com.raymond.networkreset.domain.enums.KeySignal;
 import com.raymond.networkreset.domain.valueobject.SerialConfiguration;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -108,6 +109,21 @@ public class SerialCommandExecutor implements CommandExecutor {
         }
         catch (Exception e) {
             throw new IOException("Failed to send BREAK signal", e);
+        }
+    }
+    
+    @Override
+    public void sendKey(KeySignal keySequence) throws IOException {
+        if (!isConnected()) {
+            throw new IOException("Serial executor is not connected");
+        }
+        
+        try {
+            output.write(keySequence.getKeySequence());
+            output.flush();
+        }
+        catch (IOException e) {
+            throw new IOException("Failed to send " + keySequence.name(), e);
         }
     }
     

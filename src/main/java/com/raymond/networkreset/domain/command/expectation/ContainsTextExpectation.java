@@ -26,4 +26,9 @@ public final class ContainsTextExpectation implements ResponseExpectation {
         }
         return response.getRawText().contains(expected);
     }
+    
+    @Override
+    public String toString() {
+        return expected;
+    }
 }

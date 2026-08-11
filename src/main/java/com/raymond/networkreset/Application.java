@@ -23,18 +23,40 @@ import java.util.List;
  */
 public class Application {
     
+    /*
+    Dell Responses:
+        new Response("Dell EMC"),
+        new Response("S4000 boot flash label"),
+        new Response(""),
+        new Response("BOOT_USER#"),
+        new Response(""),
+        new Response("DellEMC>"),
+        new Response("DellEMC#"),
+        new Response("Warning"),
+        new Response("Success")
+    Cisco Responses:
+        new Response("Cisco Catalyst 2960"),
+        new Response("Switch: "),
+        new Response("Switch: "),
+        new Response("Are you sure you want to delete 'flash:config.text' (y/n)?"),
+        new Response("File 'flash:config.text' deleted"),
+        new Response("Are you sure you want to delete 'flash:vlan.dat' (y/n)?"),
+        new Response("File 'flash:vlan.dat' deleted"),
+        new Response("Would you like to enter to initial configuration dialog? [yes/no]: "))
+    */
     public static void main(String[] args) {
         System.out.println("======= Network Appliance Reset System ========");
         CommandExecutor mockSerial = new MockSerialExecutor(List.of(
-                new Response("Cisco Catalyst 2960"),
-                new Response("Switch: "),
-                new Response("Switch: "),
-                new Response("Are you sure you want to delete 'flash:config.text' (y/n)?"),
-                new Response("File 'flash:config.text' deleted"),
-                new Response("Are you sure you want to delete 'flash:vlan.dat' (y/n)?"),
-                new Response("File 'flash:vlan.dat' deleted"),
-                new Response("Would you like to enter to initial configuration dialog? [yes/no]: "))
-        );
+                new Response("Dell EMC"),
+                new Response("S4000 boot flash label"),
+                new Response(""),
+                new Response("BOOT_USER#"),
+                new Response(""),
+                new Response("DellEMC>"),
+                new Response("DellEMC#"),
+                new Response("Warning"),
+                new Response("Success")
+        ));
         
         ConnectionSession session = new ConnectionSession(mockSerial);
         try {

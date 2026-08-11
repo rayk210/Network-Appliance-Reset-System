@@ -4,6 +4,7 @@
  */
 package com.raymond.networkreset.domain.command;
 
+import com.raymond.networkreset.domain.enums.KeySignal;
 import java.io.IOException;
 import java.time.Duration;
 
@@ -20,6 +21,8 @@ public interface CommandExecutor {
     boolean isConnected();
     
     void sendCommand(String command) throws IOException;
+    
+    void sendKey(KeySignal keySequence) throws IOException;
     
     void sendBreak() throws IOException;
     

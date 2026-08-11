@@ -35,7 +35,7 @@ public class DeviceDetectorUseCase {
         BannerParser parser = resolver.resolve(banner);
         
         DeviceModel model = parser.parse(banner);
-        System.out.println(model.getBrand() + " " + model.getName() + " detected");
+        System.out.println(model.getBrand() + " " + model.getName() + " detected\n");
         
         return factory.create(model); 
     }

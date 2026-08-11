@@ -24,15 +24,22 @@ public class CommandSession {
         
         for (CommandStep step : command.commands()) {
             boolean success = false;
-            System.out.println("Sent: " + step.getAction());
             
             for(int i = 0; i < step.getMaxRetries(); i++) {
                 step.getAction().execute(executor);
+                System.out.println((i == 0 ? "Sent: " : "Resent: ") + step.getAction());
+                
+                if(!step.expectsResponse()) {
+                    success = true;
+                    break;
+                }
                 
                 Response response = executor.receive(step.getTimeout());
                 System.out.println("Received: " + response.getRawText());
                 
                 if (step.getExpectation().matches(response)) {
+                    System.out.println("Received correct response on attempt " + (i + 1) + "/" + step.getMaxRetries());
+                    System.out.println("Continue to next step...");
                     success = true;
                     break;
                 }

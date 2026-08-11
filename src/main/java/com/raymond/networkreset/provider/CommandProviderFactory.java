@@ -4,8 +4,6 @@
  */
 package com.raymond.networkreset.provider;
 
-import com.raymond.networkreset.provider.CommandProvider;
-import com.raymond.networkreset.provider.CiscoCommandProvider;
 import com.raymond.networkreset.domain.model.NetworkDevice;
 
 /**

@@ -54,4 +54,8 @@ public final class CommandStep {
     public int getMaxRetries() {
         return maxRetries;
     }
+    
+    public boolean expectsResponse() {
+        return expectation != null;
+    }
 }

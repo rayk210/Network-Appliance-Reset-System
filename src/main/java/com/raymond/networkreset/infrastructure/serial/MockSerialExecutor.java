@@ -6,6 +6,7 @@ package com.raymond.networkreset.infrastructure.serial;
 
 import com.raymond.networkreset.domain.command.CommandExecutor;
 import com.raymond.networkreset.domain.command.Response;
+import com.raymond.networkreset.domain.enums.KeySignal;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class MockSerialExecutor implements CommandExecutor {
     private boolean connection = false;
     private final List<String> sentCommands;
     private final Queue<Response> responses;
+    private final List<KeySignal> sentKeys = new ArrayList<>();
     
     public MockSerialExecutor(List<Response> responses) {
         this.sentCommands = new ArrayList<>();
@@ -52,6 +54,11 @@ public class MockSerialExecutor implements CommandExecutor {
     }
     
     @Override
+    public void sendKey(KeySignal keySequence) {
+        sentKeys.add(keySequence);
+    }
+    
+    @Override
     public Response receive(Duration timeout) throws IOException {
         
         long deadline = System.currentTimeMillis() + timeout.toMillis();
@@ -73,5 +80,13 @@ public class MockSerialExecutor implements CommandExecutor {
             }
         }
         throw new IOException("Timed out waiting for response"); 
+    }
+    
+    public List<String> getSentCommand() {
+        return List.copyOf(sentCommands);
+    }
+    
+    public List<KeySignal> getKeySignal() {
+        return List.copyOf(sentKeys);
     }
 }
