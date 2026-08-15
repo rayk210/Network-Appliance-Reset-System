@@ -4,8 +4,12 @@
  */
 package com.raymond.networkreset.provider;
 
-import com.raymond.networkreset.provider.CommandProvider;
 import com.raymond.networkreset.domain.command.DeviceCommand;
+import com.raymond.networkreset.domain.exception.UnsupportedDeviceException;
+import com.raymond.networkreset.domain.valueobject.DeviceModel;
+import com.raymond.networkreset.provider.modelresolver.ModelCommandResolver;
+import com.raymond.networkreset.provider.modelresolver.paloalto.PaloaltoPA3250Resolver;
+import java.util.List;
 
 /**
  *
@@ -13,9 +17,28 @@ import com.raymond.networkreset.domain.command.DeviceCommand;
  */
 public class PaloaltoCommandProvider implements CommandProvider {
     
+    private final DeviceModel model;
+    private final List<ModelCommandResolver> resolvers;
+    
+    public PaloaltoCommandProvider(DeviceModel model) {
+        if (model == null) {
+            throw new IllegalArgumentException("Device model cannot be null");
+        }
+        this.model = model;
+        
+        this.resolvers = List.of(
+                new PaloaltoPA3250Resolver()
+        );
+    }
+    
     @Override
     public DeviceCommand factoryReset() {
-        throw new UnsupportedOperationException("Method not yet implemented");
+        for (ModelCommandResolver resolver : resolvers) {
+            if (resolver.supports(model)) {
+                return resolver.createFactoryReset();
+            }
+        }
+        throw new UnsupportedDeviceException("Factory reset is unsupported for " + model.getName());
     }
     
     @Override

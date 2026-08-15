@@ -22,10 +22,6 @@ public final class CommandStep {
             throw new IllegalArgumentException("Command cannot be null");
         }
         
-        if (expectation == null) {
-            throw new IllegalArgumentException("Expectation cannot be null");
-        }
-        
         if (maxRetries < 1) {
             throw new IllegalArgumentException("Retry count must be at least one");
         }

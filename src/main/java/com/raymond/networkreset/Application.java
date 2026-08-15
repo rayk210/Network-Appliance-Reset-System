@@ -25,15 +25,14 @@ public class Application {
     
     /*
     Dell Responses:
-        new Response("Dell EMC"),
+        new Response("Dell (EMC) S4000"),
         new Response("S4000 boot flash label"),
-        new Response(""),
         new Response("BOOT_USER#"),
-        new Response(""),
         new Response("DellEMC>"),
         new Response("DellEMC#"),
         new Response("Warning"),
         new Response("Success")
+    
     Cisco Responses:
         new Response("Cisco Catalyst 2960"),
         new Response("Switch: "),
@@ -47,11 +46,9 @@ public class Application {
     public static void main(String[] args) {
         System.out.println("======= Network Appliance Reset System ========");
         CommandExecutor mockSerial = new MockSerialExecutor(List.of(
-                new Response("Dell EMC"),
+                new Response("Dell (EMC) S4000"),
                 new Response("S4000 boot flash label"),
-                new Response(""),
                 new Response("BOOT_USER#"),
-                new Response(""),
                 new Response("DellEMC>"),
                 new Response("DellEMC#"),
                 new Response("Warning"),

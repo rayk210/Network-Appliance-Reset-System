@@ -10,4 +10,5 @@ package com.raymond.networkreset.domain.command;
  */
 public interface ResponseExpectation {
     boolean matches(Response response);
+    
 }

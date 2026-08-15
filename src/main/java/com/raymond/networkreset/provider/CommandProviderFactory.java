@@ -17,13 +17,13 @@ public class CommandProviderFactory {
         switch (device.getModel().getBrand()) {
             
             case CISCO:
-                return new CiscoCommandProvider();
+                return new CiscoCommandProvider(device.getModel());
             
             case DELL:
-                return new DellCommandProvider();
+                return new DellCommandProvider(device.getModel());
             
             case PALO_ALTO:
-                return new PaloaltoCommandProvider();
+                return new PaloaltoCommandProvider(device.getModel());
                 
             default:
                 throw new IllegalArgumentException("Command provider not found");

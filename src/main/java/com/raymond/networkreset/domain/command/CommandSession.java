@@ -30,6 +30,7 @@ public class CommandSession {
                 System.out.println((i == 0 ? "Sent: " : "Resent: ") + step.getAction());
                 
                 if(!step.expectsResponse()) {
+                    System.out.println(step.getAction() + " does not expect a response");
                     success = true;
                     break;
                 }

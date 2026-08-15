@@ -4,13 +4,11 @@
  */
 package com.raymond.networkreset.provider;
 
-import com.raymond.networkreset.application.dto.FactoryResetCommand;
-import com.raymond.networkreset.domain.command.CommandStep;
-import com.raymond.networkreset.domain.command.expectation.ContainsTextExpectation;
+import com.raymond.networkreset.provider.modelresolver.ModelCommandResolver;
 import com.raymond.networkreset.domain.command.DeviceCommand;
-import com.raymond.networkreset.domain.command.BreakSignalAction;
-import com.raymond.networkreset.domain.command.SendCommandAction;
-import java.time.Duration;
+import com.raymond.networkreset.domain.exception.UnsupportedDeviceException;
+import com.raymond.networkreset.domain.valueobject.DeviceModel;
+import com.raymond.networkreset.provider.modelresolver.cisco.CiscoCatalyst2960Resolver;
 import java.util.List;
 
 /**
@@ -19,16 +17,28 @@ import java.util.List;
  */
 public class CiscoCommandProvider implements CommandProvider {
     
+    private final DeviceModel model;
+    private final List<ModelCommandResolver> resolvers;
+    
+    public CiscoCommandProvider(DeviceModel model) {
+        if (model == null) {
+            throw new IllegalArgumentException("Device model cannot be null");
+        }
+        this.model = model;
+        
+        this.resolvers = List.of(
+                new CiscoCatalyst2960Resolver()
+        );
+    }
+    
     @Override
     public DeviceCommand factoryReset() {
-        return new FactoryResetCommand(List.of(new CommandStep(new BreakSignalAction(), Duration.ofSeconds(10), new ContainsTextExpectation("Switch: "), 1),
-                                               new CommandStep(new SendCommandAction("flash_init"), Duration.ofSeconds(6), new ContainsTextExpectation("Switch: "), 1),
-                                               new CommandStep(new SendCommandAction("del flash:config.text"), Duration.ofSeconds(2), new ContainsTextExpectation("Are you sure you want to delete 'flash:config.text' (y/n)?"), 1),
-                                               new CommandStep(new SendCommandAction("y"), Duration.ofSeconds(3), new ContainsTextExpectation("File 'flash:config.text' deleted"), 1),
-                                               new CommandStep(new SendCommandAction("del flash:vlan.dat"), Duration.ofSeconds(2), new ContainsTextExpectation("Are you sure you want to delete 'flash:vlan.dat' (y/n)?"), 1),
-                                               new CommandStep(new SendCommandAction("y"), Duration.ofSeconds(3), new ContainsTextExpectation("File 'flash:vlan.dat' deleted"), 1),
-                                               new CommandStep(new SendCommandAction("boot"), Duration.ofSeconds(2), new ContainsTextExpectation("Would you like to enter to initial configuration dialog? [yes/no]: "), 1)
-        ));
+        for (ModelCommandResolver resolver : resolvers) {
+            if (resolver.supports(model)) {
+                return resolver.createFactoryReset();
+            }
+        }
+        throw new UnsupportedDeviceException("Factory reset is unsupported for " + model.getName());
     }
     
     @Override

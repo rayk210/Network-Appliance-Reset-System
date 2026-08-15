@@ -17,9 +17,9 @@ import java.util.Map;
 public class DellBannerParser implements BannerParser {
     
     private static final Map<String, String> MODELS = Map.of(
-            "s3248t-on", "S3248T-ON",
-            "s5248f-on", "S5248F-ON",
-            "dell emc", "Dell EMC"
+            "z9100", "Z9100",
+            "s4048-on", "S4048-ON",
+            "s4000", "S4000"
     );
     
     @Override

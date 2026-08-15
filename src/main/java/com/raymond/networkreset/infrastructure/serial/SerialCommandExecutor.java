@@ -27,9 +27,19 @@ public class SerialCommandExecutor implements CommandExecutor {
     private SerialPort comPort;
     private static final byte[] CRLF_BYTES = "\r\n".getBytes(StandardCharsets.UTF_8);
     private final SerialConfiguration config;
+    private final boolean streamMode;
     
     public SerialCommandExecutor(SerialConfiguration config) {
         this.config = config;
+        this.streamMode = false;
+    }
+    
+    public SerialCommandExecutor(SerialConfiguration config, InputStream input, OutputStream output) {
+        this.config = config;
+        this.input = input;
+        this.output = output;
+        
+        this.streamMode = true;
     }
     
     @Override
@@ -75,6 +85,9 @@ public class SerialCommandExecutor implements CommandExecutor {
     
     @Override
     public boolean isConnected() {
+        if (streamMode) {
+            return input != null && output != null;
+        }
         return comPort != null && comPort.isOpen();
     }
     
