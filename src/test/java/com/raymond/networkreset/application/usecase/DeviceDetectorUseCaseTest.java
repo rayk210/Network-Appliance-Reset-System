@@ -33,7 +33,7 @@ public class DeviceDetectorUseCaseTest {
                                         new Response("Cisco Catalyst 2960")));
         
         MockSerialExecutor mockCom2 = new MockSerialExecutor(List.of(
-                                        new Response("Dell S3248T-ON")));
+                                        new Response("Dell S4000")));
         
         MockSerialExecutor mockCom3 = new MockSerialExecutor(List.of(
                                         new Response("Paloalto PA-3250")));

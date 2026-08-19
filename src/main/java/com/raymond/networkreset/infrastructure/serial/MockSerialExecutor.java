@@ -50,12 +50,13 @@ public class MockSerialExecutor implements CommandExecutor {
     
     @Override
     public void sendBreak() {
-        
+        sentCommands.add("Break Signal Issued...");
     }
     
     @Override
     public void sendKey(KeySignal keySequence) {
         sentKeys.add(keySequence);
+        sentCommands.add(keySequence.name());
     }
     
     @Override
